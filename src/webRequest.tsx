@@ -31,23 +31,23 @@ const codeMessage:CodeObject = {
 
 export const SERVICE_CODE_200 = 200;
 
-interface ResObj {
-    data: Object,
+type ResObj<T> = {
+    data: T,
     code: Number,
     msg: string,
     [propName: string]: any;
 }
 
-interface ConfigObject { 
+type ConfigObject = { 
     LOGIN_URL: string,
     [propName: string]: any;
 }
-interface RequestObject {
-    request: any,
-    post: any,
-    get: any,
-    resolvePost: any,
-    resolveGet: any,
+type RequestObject = {
+    request: Function,
+    post: Function,
+    get: Function,
+    resolvePost: Function,
+    resolveGet: Function,
     [propName: string]: any;
 }
 
@@ -140,22 +140,27 @@ export const webRequest = (config: ConfigObject ): RequestObject  => {
         return response;
     });
 
-    const post = R.curry((url: string, data: Object) => {
-        return request(url, {
-            method: 'post',
-            version: '1.0',
-            data,
+    function post<T>() {
+        return R.curry((url: string, data: T) => {
+            return request(url, {
+                method: 'post',
+                version: '1.0',
+                data,
+            });
         });
-    });
-    const get = R.curry((url: string, data: Object) => {
-        return request(url, {
-            method: 'get',
-            data,
-            version: '1.0',
+    }
+
+    function get<T>() {
+        return R.curry((url: string, data: T) => {
+            return request(url, {
+                method: 'get',
+                data,
+                version: '1.0',
+            });
         });
-    });
+    }
     
-    const postIgnoreError = (url: string, data: Object) => {
+    function postIgnoreError<T>(url: string, data: T) {
         return request(url, {
             method: 'POST',
             data,
@@ -164,18 +169,18 @@ export const webRequest = (config: ConfigObject ): RequestObject  => {
         });
     };
     
-    const getIgnoreError = (url: string, params: Object) => {
+    function getIgnoreError<T>(url: string, data: T) {
         return request(url, {
             method: 'GET',
-            params,
+            data,
             version: '1.0',
             ignoreError: true,
         });
     };
     
-    const resolveResponse = (promise: any) => {
+    function resolveResponse<T>(promise: any) {
         return new Promise((resolve, reject) => {
-            promise.then((res: ResObj) => {
+            promise.then((res: ResObj<T>) => {
                 const { data, code, msg } = res;
                 if (code === SERVICE_CODE_200) {
                     resolve(data);
@@ -198,8 +203,8 @@ export const webRequest = (config: ConfigObject ): RequestObject  => {
      * // reject<Response>(response.msg), 此时 response.code !== SERVICE_CODE_200
      * 异常返回: reject(msg);
      */
-    const resolvePost = (url: string, data: Object) => resolveResponse(postIgnoreError(url, data));
-    const resolveGet = (url: string, data: Object) => resolveResponse(getIgnoreError(url, data));
+    function resolvePost<T>(url: string, data: T) { return resolveResponse(postIgnoreError(url, data))} ;
+    function resolveGet<T>(url: string, data: T) { return resolveResponse(getIgnoreError(url, data))}; 
     return {
         request,
         post,
