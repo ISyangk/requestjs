@@ -10,6 +10,8 @@
     "@types/node": "^16.18.59",
     "@types/react": "^18.2.29",
     "@types/react-dom": "^18.2.14",
+    "ramda": "^0.29.1",
+    "antd": "^4.24.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -61,8 +63,8 @@
     "eslint-config-prettier": "^9.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
-    "npm-pakage": "^1.0.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "umi-request": "^1.4.0"
   },
   "config": {
     "commitizen": {
