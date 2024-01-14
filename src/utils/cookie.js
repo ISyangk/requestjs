@@ -1,3 +1,4 @@
+import wx from 'weixin-js-sdk';
 /**
  * Cookie基础库
  * @example

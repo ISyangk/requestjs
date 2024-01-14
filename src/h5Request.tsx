@@ -131,7 +131,7 @@ const customErr = (response: { code: number; data: any; msg: any; message: any; 
     interceptors: [requestInterceptor, responseInterceptor, errorInterceptor],
   });
 
-class H5Request {
+class HttpRequest {
     API_URL: string;
     APP_KEY: string;
     APP_SECRET: string;
@@ -401,4 +401,4 @@ class H5Request {
   }
 }
 
-export default H5Request;
+export const H5Request = HttpRequest;

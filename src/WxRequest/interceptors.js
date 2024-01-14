@@ -1,7 +1,7 @@
 import Taro, { getCurrentInstance } from "@tarojs/taro";
 import { stringify } from "qs";
 
-import { getLocationSearch } from "@/utils";
+import { getLocationSearch } from "../utils.js";
 import { getCookiesStr, setCookie, setCookieFromHeader } from "../utils/cookie.weapp.js";
 
 const loginPage = `/pages/user/login/index`;

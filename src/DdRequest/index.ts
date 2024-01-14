@@ -61,8 +61,9 @@ class HttpRequest {
   requests = [] as any;
   // 钉钉请求方法
   ddRequest = async (option: { url: any; }) => {
+    const ddInstance:any = dd;
     try {
-      const res = await dd.httpRequest(option);
+      const res = await ddInstance.httpRequest(option);
       switch (res.status) {
         case 200:
           if (res.data.code === 200) {
@@ -343,4 +344,4 @@ class HttpRequest {
   }
 }
 
-export default HttpRequest;
+export const DdRequest = HttpRequest;

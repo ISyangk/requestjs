@@ -11,7 +11,7 @@ interceptors.forEach(i => Taro.addInterceptor(i));
 
 const DEFAULT_VERSION = "1.0";
 
-class WxRequest {
+class HttpRequest {
   API_URL: string;
   APP_KEY: string;
   APP_SECRET: string;
@@ -256,4 +256,4 @@ class WxRequest {
   }
 }
 
-export default WxRequest;
+export const WxRequest = HttpRequest;

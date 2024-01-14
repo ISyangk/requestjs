@@ -1,4 +1,4 @@
-import * as Taro from "@/adapter/taro";
+import * as Taro from "../adapter/taro";
 
 // eslint-disable-next-line no-unused-vars
 export const showErrorMsg = (e, isToast = false) => {
