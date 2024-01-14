@@ -35,12 +35,18 @@ type ResObj<T> = {
     data: T,
     code: Number,
     msg: string,
-    [propName: string]: any;
+    [propName: string]: any,
 }
 
 type ConfigObject = { 
     LOGIN_URL: string,
-    [propName: string]: any;
+    HOST_URL: string,
+    GATEWAY_URL: string,
+    LOG_APP_KEY: string,
+    LOG_APP_SECRET: string,
+    APP_KEY: string,
+    APP_SECRET: string,
+    [propName: string]: any,
 }
 type RequestObject = {
     request: Function,
@@ -48,12 +54,12 @@ type RequestObject = {
     get: Function,
     resolvePost: Function,
     resolveGet: Function,
-    [propName: string]: any;
+    [propName: string]: any,
 }
 
 export type LocationSearchType = {
   accessToken: String,
-  [propName: string]: any;
+  [propName: string]: any,
 }
 
 // 异常处理程序
@@ -72,7 +78,7 @@ const errorHandler = (error: ResponseError) => {
     throw error;
 };
 
-export const webRequest = (config: ConfigObject ): RequestObject  => {
+export const webRequest = (config: ConfigObject, redirectToHome: any, unifyErrorMsgFn: (msg: any) => void, redirectToLoginFn: () => void ): RequestObject  => {
     const { LOGIN_URL } = config;
     (window as any).baseConfig = config;
     const request = extend({
@@ -117,7 +123,6 @@ export const webRequest = (config: ConfigObject ): RequestObject  => {
     
         // 不调用网关，直接调用服务端api
         options.prefix = fmtPrefix;
-        console.log('89 lines=>', fmtPrefix, fmtUrl);
         return {
             url: `${fmtPrefix}${fmtUrl}`,
             options,
@@ -129,13 +134,21 @@ export const webRequest = (config: ConfigObject ): RequestObject  => {
         const rsp = await response?.clone()?.json();
         const { code, msg, message: fmtMsg } = rsp || {};
         if (code === 401 || code === 5006 || code === 1100) {
-            goToLogin();
+            if (redirectToLoginFn) {
+                redirectToLoginFn();
+            } else {
+                goToLogin(redirectToHome);
+            }
             return;
         }
         // 统一业务错误信息提示，ignoreError 为 true 时不提示公共错误信息
         if (!/^2/.test(code) && !options?.ignoreError) {
             const msgError = msg || fmtMsg || '';
-            message.error(!msgError || msgError.length >= 40 ? '服务器繁忙，请稍后再试' : msgError);
+            if (unifyErrorMsgFn) {
+                unifyErrorMsgFn(msgError);
+            } else {
+                message.error(!msgError || msgError.length >= 40 ? '服务器繁忙，请稍后再试' : msgError);
+            }
         }
         return response;
     });

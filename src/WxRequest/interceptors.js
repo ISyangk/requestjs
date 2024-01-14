@@ -2,7 +2,7 @@ import Taro, { getCurrentInstance } from "@tarojs/taro";
 import { stringify } from "qs";
 
 import { getLocationSearch } from "@/utils";
-import { getCookiesStr, setCookie, setCookieFromHeader } from "./cookie";
+import { getCookiesStr, setCookie, setCookieFromHeader } from "../utils/cookie.weapp.js";
 
 const loginPage = `/pages/user/login/index`;
 /**
@@ -10,7 +10,7 @@ const loginPage = `/pages/user/login/index`;
  */
 const customInterceptor = (chain) => {
   const requestParams = chain.requestParams;
-  const { url } = requestParams;
+  const { url, doCookieFromHeaderfn, } = requestParams;
   const header = requestParams.header || {};
   delete requestParams.ignoreErrorMsg;
   return chain
@@ -23,7 +23,12 @@ const customInterceptor = (chain) => {
       },
     })
     .then((res) => {
-      setCookieFromHeader(res.header["Set-Cookie"] || res.header["set-cookie"]);
+      if (doCookieFromHeaderfn) {
+        doCookieFromHeaderfn();
+      } else {
+        setCookieFromHeader(res.header["Set-Cookie"] || res.header["set-cookie"]);
+      }
+      
       if (res.statusCode === 200) {
         return res.data;
       } else if (res.statusCode === 404) {
@@ -52,7 +57,7 @@ const customInterceptor = (chain) => {
  */
 const hxInterceptor = (chain) => {
   const requestParams = chain.requestParams;
-  const { noCheckDataCode = false } = requestParams;
+  const { noCheckDataCode = false, cbFn_401, noTenantCodeCbFn } = requestParams;
 
   if (noCheckDataCode) {
     return chain.proceed(requestParams);
@@ -76,32 +81,36 @@ const hxInterceptor = (chain) => {
         scene = tenantId;
       }
 
-      // console.log("%c =========", "color:#6076ff;");
-      // console.log("~~~currentPage~~", path);
-      // console.log("~~~options~~", params);
-      // console.log("~~~scene~~", scene);
-      // console.log("%c =========", "color:#6076ff;");
-
       if (res.code === 401) {
-        if (path && !path.includes(loginPage)) {
-          setCookie({
-            BEFORE_LOGIN_PAGE: path,
-            BEFORE_LOGIN_PAGE_OPTION: stringify(params),
+        // 401 回调函数
+        if (cbFn_401) {
+          cbFn_401();
+        } else {
+          if (path && !path.includes(loginPage)) {
+            setCookie({
+              BEFORE_LOGIN_PAGE: path,
+              BEFORE_LOGIN_PAGE_OPTION: stringify(params),
+            });
+          }
+  
+          Taro.redirectTo({
+            url: scene ? `${loginPage}?scene=${scene}` : loginPage,
           });
         }
-
-        Taro.redirectTo({
-          url: scene ? `${loginPage}?scene=${scene}` : loginPage,
-        });
+        
         return Promise.reject({ code: res.code, msg: "没有权限访问" });
       }
 
       // 没有租户的用户跳转验证企业
       if (res.code === 1100) {
-        const verifyCodePage = `/pages/user/company/index`;
-        Taro.redirectTo({
-          url: scene ? `${verifyCodePage}?scene=${scene}` : verifyCodePage,
-        });
+        if (noTenantCodeCbFn) {
+          noTenantCodeCbFn();
+        } else {
+          const verifyCodePage = `/pages/user/company/index`;
+          Taro.redirectTo({
+            url: scene ? `${verifyCodePage}?scene=${scene}` : verifyCodePage,
+          });
+        }
         return Promise.reject({ code: res.code, msg: "没有租户的用户" });
       }
 
@@ -120,7 +129,7 @@ const hxInterceptor = (chain) => {
     })
     .catch((err) => {
       return Promise.reject({
-        msg: err.errMsg ? NET_ERROR : err.msg,
+        msg: err.errMsg ? '网络连接异常，请连接后重试' : err.msg,
         code: err.code || -1,
       });
     });

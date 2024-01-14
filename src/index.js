@@ -1,3 +1,8 @@
 export { webRequest } from './webRequest';
 
-export { h5Request } from './h5Request';
+export { H5Request } from './H5Request';
+
+export { DdRequest } from './DdRequest';
+
+export { WxRequest } from './WxRequest';
+
