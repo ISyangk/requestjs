@@ -1,7 +1,5 @@
-import { getTenantConfig } from '@/services/user';
-
 // 跳转登录
-export const goToLogin = async (redirectToHome) => {
+export const goToLogin = async (getTenantConfig, redirectToHome) => {
   const { LOGIN_URL } = window.baseConfig;
   // 5位以上的数字通常为 id, 携带 id 的页面  redirectUrl 为默认开启页面
   const reg = /\d{5,}/;

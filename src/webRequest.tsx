@@ -78,7 +78,7 @@ const errorHandler = (error: ResponseError) => {
     throw error;
 };
 
-export const webRequest = (config: ConfigObject, redirectToHome: any, unifyErrorMsgFn: (msg: any) => void, redirectToLoginFn: () => void ): RequestObject  => {
+export const webRequest = (config: ConfigObject, redirectToHome: any, unifyErrorMsgFn?: (msg: any) => void, redirectToLoginFn?: () => void, getTenantConfig?: () => any ): RequestObject  => {
     const { LOGIN_URL } = config;
     (window as any).baseConfig = config;
     const request = extend({
@@ -137,7 +137,7 @@ export const webRequest = (config: ConfigObject, redirectToHome: any, unifyError
             if (redirectToLoginFn) {
                 redirectToLoginFn();
             } else {
-                goToLogin(redirectToHome);
+                goToLogin(getTenantConfig, redirectToHome);
             }
             return;
         }

@@ -13,9 +13,14 @@ import { OptionsType, MConfigObject } from "./Types";
 
 const loginPage = `/pages/user/login/index`;
 
+type RouterType = {
+    params: any,
+    path: any,
+    [propName: string]: any,
+};
 // 业务状态码拦截器
 const customErr = (response: { code: number; data: any; msg: any; message: any; }) => {
-    const { params: customParams, path: pagePath } = getCurrentInstance().router;
+    const { params: customParams, path: pagePath } = getCurrentInstance().router as RouterType;
     // params可能为undefined
     const scene = customParams && customParams.scene;
   
@@ -125,9 +130,6 @@ const customErr = (response: { code: number; data: any; msg: any; message: any; 
     },
     interceptors: [requestInterceptor, responseInterceptor, errorInterceptor],
   });
-
-
-
 
 class H5Request {
     API_URL: string;

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { v4 } from 'uuid';
 import { isEmpty } from 'ramda';
 
-import { filterEmpty } from '@/utils';
+import { filterEmpty } from '../utils';
 // eslint-disable-next-line camelcase
 import { hex_hmac_md5 } from './md5';
 

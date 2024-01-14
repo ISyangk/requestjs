@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hx/fe-common-hybrid": "^2.0.1",
     "@tarojs/taro": "^3.6.21",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -11,14 +12,19 @@
     "@types/node": "^16.18.59",
     "@types/react": "^18.2.29",
     "@types/react-dom": "^18.2.14",
-    "dingtalk-jsapi": "^3.0.29",
-    "ramda": "^0.29.1",
     "antd": "^4.24.5",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.10",
+    "dingtalk-jsapi": "^3.0.29",
+    "moment": "^2.30.1",
+    "qs": "^6.11.2",
+    "ramda": "^0.29.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "umi-request": "^1.4.0",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -77,6 +83,6 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-      }
+    }
   }
 }
